@@ -1,13 +1,11 @@
 ﻿import flash.display.BitmapData;
-import gfx.io.GameDelegate;
 import Shared.GlobalFunc;
-import skyui.util.Debug;
 import flash.geom.Transform;
 import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.filters.DropShadowFilter;
 
-class ahz.scripts.widgets.AHZHudInfoWidget extends Shared.PlatformChangeUser
+class AHZVRActivateRollover extends VRActivateRollover
 {
 	//Widgets 
 	public var AHZBottomBar_mc:MovieClip;
@@ -39,10 +37,6 @@ class ahz.scripts.widgets.AHZHudInfoWidget extends Shared.PlatformChangeUser
 	// private variables
 	private var locationWithoutPlayerData:Number = 0;
 	private var locationWithPlayerData:Number = 0;
-	
-	// Rects
-	private var maxXY:Object;
-	private var minXY:Object;
 
 	
 	// Statics
@@ -50,55 +44,21 @@ class ahz.scripts.widgets.AHZHudInfoWidget extends Shared.PlatformChangeUser
 
 	/* INITIALIZATION */
 	
-	public function AHZHudInfoWidget()
+	public function AHZVRActivateRollover()
 	{
 		super();
-		Stage.scaleMode = "noScale";
-		maxXY = {x:Stage.visibleRect.x,y:Stage.visibleRect.y};
-		minXY = {x:Stage.visibleRect.x + Stage.visibleRect.width,y:Stage.visibleRect.y + Stage.visibleRect.height};
-		this._parent.globalToLocal(maxXY);
-		this._parent.globalToLocal(minXY);
-		//this.swapDepths(_root.VRActivateRolloverInstance);
-		//_root.AHZWidgetContainer._xscale = 200;
-		//_root.AHZWidgetContainer._yscale = 200;
-		//_root.VRActivateRolloverInstance._xscale = 200;
-		//_root.VRActivateRolloverInstance._yscale = 200;	
-		//TransverseObject(_root);
-		//locationWithoutPlayerData = _root.VRActivateRolloverInstance._y - 400;
-		//locationWithPlayerData = _root.VRActivateRolloverInstance._y - 460;
-		
-		locationWithoutPlayerData = _root.VRActivateRolloverInstance._y;
 		locationWithPlayerData = _root.VRActivateRolloverInstance._y;
-		
-		_root.VRActivateRolloverInstance._y = locationWithoutPlayerData; 
-		
-		txtMeasureInstance._alpha = 0;
-
-		// Anchor this widget to the top left corner
-		this._y = maxXY.y;
-		this._x = maxXY.x;
-
-		// Start with the widgets hidden
-		//hideSideWidget();
-		//hideBottomWidget();
-
-		if (_root.VRActivateRolloverInstance.RolloverInfoInstance)
-		{
-			BottomRolloverText = _root.VRActivateRolloverInstance.RolloverInfoInstance;
-		}
-
-		if (_root.VRActivateRolloverInstance.RolloverNameInstance)
-		{
-			TopRolloverText = _root.VRActivateRolloverInstance.RolloverNameInstance;
-		}
-
-		
-		if (! hooksInstalled)
-		{
-			// Apply hooks to hook events
-			hookFunction(_root.VRActivateRolloverInstance,"SetCrosshairTarget",this,"SetCrosshairTarget");
-			//hookFunction(_root.HUDMovieBaseInstance,"SetCrosshairTarget",this,"SetCrosshairTarget");
+		locationWithoutPlayerData = _root.VRActivateRolloverInstance._y + 30;	
 			
+		// Start with the widgets hidden
+		hideSideWidget();
+		hideBottomWidget();
+
+		BottomRolloverText = _root.VRActivateRolloverInstance.RolloverInfoInstance;
+		TopRolloverText = _root.VRActivateRolloverInstance.RolloverNameInstance;
+
+		if (! hooksInstalled)
+		{			
 			_global.skse.plugins.AHZmoreHUDPlugin.InstallHooks();
 			hooksInstalled = true;
 		}
@@ -115,14 +75,6 @@ class ahz.scripts.widgets.AHZHudInfoWidget extends Shared.PlatformChangeUser
 		showValueToWeight = true;
 		showknownEnchantment = true;
 		showTargetWarmth = false;   // Always hide, not used in vr
-		
-		// Trial and error
-		//AHZBottomBar_mc._x = -52; 
-		//AHZBottomBar_mc._y = 280;
-		//content._x = 80;
-		//content._y = 80;
-		
-		//content._y = -50
 	}
 
 	function TransverseObject(target:Object):Void
@@ -197,10 +149,12 @@ class ahz.scripts.widgets.AHZHudInfoWidget extends Shared.PlatformChangeUser
 	function SetCrosshairTarget(abActivate, aName, abShowButton, abTextOnly, abFavorMode, aWeight, aCost, aFieldValue, aFieldText)
 	//function SetCrosshairTarget(abActivate:Boolean,aName:String,abShowButton:Boolean,abTextOnly:Boolean,abFavorMode:Boolean,abShowCrosshair:Boolean,aWeight:Number,aCost:Number,aFieldValue:Number,aFieldText):Void
 	{			
+	    super.SetCrosshairTarget(abActivate, aName, abShowButton, abTextOnly, abFavorMode, aWeight, aCost, aFieldValue, aFieldText);
+		
 		var validTarget:Boolean = false;
 		var activateWidgets:Boolean = false;
 		var outData:Object = {outObj:Object};
-		_global.skse.plugins.AHZmoreHUDPlugin.AHZLog("SetCrosshairTarget");
+		
 			
 		//showEquippedWidget(1);
 		if (abActivate)
@@ -223,17 +177,6 @@ class ahz.scripts.widgets.AHZHudInfoWidget extends Shared.PlatformChangeUser
 		ProcessBookSkill(validTarget);
 		ProcessWeightClass(validTarget);
 		ProcessReadBook(validTarget);
-	}
-		
-
-	function interpolate(pBegin:Number, pEnd:Number, pMax:Number, pStep:Number):Number {
-		return pBegin + Math.floor((pEnd - pBegin) * pStep / pMax);
-	}
-
-	function measureStringWidth(str:String):Number {
-		txtMeasureInstance._alpha = 0;
-    	txtMeasureInstance.text = str;
-    	return txtMeasureInstance.textWidth;
 	}
 
 	function ProcessTargetWarmth(isValidTarget:Boolean):Void
@@ -574,8 +517,7 @@ class ahz.scripts.widgets.AHZHudInfoWidget extends Shared.PlatformChangeUser
 		}
 		else
 		{
-			AHZBottomBar_mc._alpha = 0;
-			_root.VRActivateRolloverInstance._y = locationWithoutPlayerData; 
+			hideBottomWidget();
 		}
 	}
 
@@ -653,32 +595,4 @@ class ahz.scripts.widgets.AHZHudInfoWidget extends Shared.PlatformChangeUser
 			}
 		}
 	}
-
-	public static function hookFunction(a_scope:Object, a_memberFn:String, a_hookScope:Object, a_hookFn:String):Boolean {
-		var memberFn:Function = a_scope[a_memberFn];
-		if (memberFn == null || a_scope[a_memberFn] == null) {
-			return false;
-		}
-
-		a_scope[a_memberFn] = function () {
-			memberFn.apply(a_scope,arguments);
-			a_hookScope[a_hookFn].apply(a_hookScope,arguments);
-		};
-		return true;
-	}
-	
-
-	function InitExtensions()
-    {
-
-    } // End of the function
-    function SetPlatform(aiPlatform, abPS3Switch)
-    {
-    } // End of the function
-
-    function RefreshActivateButtonArt(astrButtonName)
-    {
-
-    } // End of the function
-
 }
