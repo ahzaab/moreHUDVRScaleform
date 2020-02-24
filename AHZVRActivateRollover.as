@@ -37,7 +37,7 @@ class AHZVRActivateRollover extends VRActivateRollover
 	// private variables
 	private var locationWithoutPlayerData:Number = 0;
 	private var locationWithPlayerData:Number = 0;
-
+	private var savedAHZBottomBar_mcY:Number = 0;
 	
 	// Statics
 	private static var hooksInstalled:Boolean = false;
@@ -49,7 +49,7 @@ class AHZVRActivateRollover extends VRActivateRollover
 		super();
 		locationWithPlayerData = _root.VRActivateRolloverInstance._y;
 		locationWithoutPlayerData = _root.VRActivateRolloverInstance._y + 30;	
-			
+		savedAHZBottomBar_mcY = AHZBottomBar_mc._y;
 		// Start with the widgets hidden
 		hideSideWidget();
 		hideBottomWidget();
@@ -513,7 +513,16 @@ class AHZVRActivateRollover extends VRActivateRollover
 
 
 			AHZBottomBar_mc._alpha = 100;
-			_root.VRActivateRolloverInstance._y = locationWithPlayerData; 
+			
+			// No need to keep it higher if no details are shown
+			if (_root.VRActivateRolloverInstance.RolloverGrayBar_mc._alpha){
+				_root.VRActivateRolloverInstance._y = locationWithPlayerData; 
+				AHZBottomBar_mc._y = savedAHZBottomBar_mcY;
+			}
+			else{
+				_root.VRActivateRolloverInstance._y = locationWithoutPlayerData;
+				AHZBottomBar_mc._y = savedAHZBottomBar_mcY - 15;
+			}
 		}
 		else
 		{
