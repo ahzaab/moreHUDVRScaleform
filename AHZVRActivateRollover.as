@@ -64,16 +64,16 @@ class AHZVRActivateRollover extends VRActivateRollover
 		}
 		
 		// Initialize variables
-		viewSideInfo = true;
-		viewEffectsInfo = true;
-		viewBottomInfo = true;
-		viewInventoryCount = true;
-		showBooksRead = true;
-		showWeightClass = true;
-		showBookSkill = true;
+		viewSideInfo = false;
+		viewEffectsInfo = false;
+		viewBottomInfo = false;
+		viewInventoryCount = false;
+		showBooksRead = false;
+		showWeightClass = false;
+		showBookSkill = false;
 		showTargetWeight = false;
-		showValueToWeight = true;
-		showknownEnchantment = true;
+		showValueToWeight = false;
+		showknownEnchantment = false;
 		showTargetWarmth = false;   // Always hide, not used in vr
 	}
 
@@ -168,6 +168,11 @@ class AHZVRActivateRollover extends VRActivateRollover
 			ProcessPlayerWidget(validTarget, (outData.outObj && outData.outObj.canCarry));	
 			// Process the side widget and inventory
 			ProcessTargetAndInventoryWidget(validTarget);					
+		}
+		else
+		{
+			hideSideWidget();
+			hideBottomWidget();	
 		}
 		
 		// Always show regardless of activation mode
@@ -423,30 +428,19 @@ class AHZVRActivateRollover extends VRActivateRollover
 								   effectsView:Number, 
 								   bottomView:Number, 
 								   inventoryCount:Number, 
-								   bottomAlignedValue:Number, 
-								   inventoryAlignedValue:Number, 
-								   ingredientWidgetStyleValue:Number, 
-								   effectsWidgetStyleValue:Number,
 								   showWeightClassValue:Number,
 								   showBooksReadValue:Number,
-								   activationModeValue:Number,
-								   ToggleStateValue:Number,
 								   showBookSkillValue:Number,
 								   showTargetWeightValue:Number,
 								   showValueToWeightValue:Number,
-								   showEnemyLevelValue:Number,
-								   showEnemyLevelMaxValue:Number,
-								   showEnemyLevelMinValue:Number,
-								   showknownEnchantmentValue:Number,
-								   widgetDisplayDelayMSValue:Number,
-								   showEnemySoulLevelValue:Number):Void 
+								   showknownEnchantmentValue:Number):Void 
 	{				
 		viewSideInfo = (sideView>=1);
+		viewEffectsInfo = (effectsView>=1);
 		viewBottomInfo = (bottomView>=1);
 		viewInventoryCount = (inventoryCount>=1);
-		viewEffectsInfo = (effectsView>=1);
-		showBooksRead = (showBooksReadValue>=1);
 		showWeightClass = (showWeightClassValue>=1);
+		showBooksRead = (showBooksReadValue>=1);
 		showBookSkill = (showBookSkillValue>=1);
 		showTargetWeight = (showTargetWeightValue>=1);
 		showValueToWeight = (showValueToWeightValue>=1);
@@ -574,8 +568,8 @@ class AHZVRActivateRollover extends VRActivateRollover
 				else if (a_val["effect" + i]=="")
 				{
 					content["Ingredient" + i].htmlText="$UNKNOWN";
-					content["IngredientBullet" + i]._alpha=25;
-					content["Ingredient" + i]._alpha=25;
+					content["IngredientBullet" + i]._alpha=50;
+					content["Ingredient" + i]._alpha=50;
 				}
 				else
 				{

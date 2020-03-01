@@ -30,6 +30,7 @@ class AHZEnemyLevel extends MovieClip
 	private var savedEnemyLevelNumber:Number = 0;
 	private var savedPlayerLevelNumber:Number = 0;
 	private var tempfunc:Function;
+	private var firstRun:Boolean = true;
 	
 	// Rects
 	private var maxXY:Object;
@@ -44,18 +45,19 @@ class AHZEnemyLevel extends MovieClip
 	public function AHZEnemyLevel()
 	{
 		super();
-		
+		firstRun = true;
 		// Changing scale to compensate for the size change of the nif
 		_root.VREnemyMetersInstance._yscale = _root.VREnemyMetersInstance._yscale * 0.565289527; //0.434710473; //0.565289527;
 		_root.VREnemyMetersInstance._xscale = _root.VREnemyMetersInstance._xscale * 0.769005;
-		
+
 		var mc:MovieClip = MovieClip(_root.VREnemyMetersInstance.EnemyHealth_mc.BracketsInstance);
 		AHZEnemyLevel_mc = mc.duplicateMovieClip("AHZEnemyLevel_mc", this.getNextHighestDepth());
 		_root.VREnemyMetersInstance.EnemyHealth_mc.BracketsInstance._y = 1000;
 		AHZEnemyLevel_mc.gotoAndStop(100);
 		AHZEnemyLevel_mc.RolloverNameInstance.textAutoSize="shrink";	
 		SoulLevelInstance.textAutoSize="shrink";
-		
+		firstRun = false;
+
 		if (! hooksInstalled)
 		{	
 			// Apply hooks to hook events
@@ -65,10 +67,10 @@ class AHZEnemyLevel extends MovieClip
 		}
 			
 		// Initialize variables
-		showEnemyLevel = true;
+		showEnemyLevel = false;
 		showEnemyLevelMax = 10;
 		showEnemyLevelMin = 10;
-		showEnemySoulLevel = true;
+		showEnemySoulLevel = false;
 	}
 	
 	function appendHtmlToEnd(htmlText:String, appendedHtml:String):String
@@ -120,17 +122,17 @@ class AHZEnemyLevel extends MovieClip
 	{
 		// Could use the extension method SetText, but just to be sure
 		if (_root.VREnemyMetersInstance.EnemyHealth_mc.BracketsInstance.RolloverNameInstance.html){
-			AHZEnemyLevel_mc.html = true;
-			AHZEnemyLevel_mc.htmlText = _root.VREnemyMetersInstance.EnemyHealth_mc.BracketsInstance.RolloverNameInstance.htmlText;
+			AHZEnemyLevel_mc.RolloverNameInstance.html = true;
+			AHZEnemyLevel_mc.RolloverNameInstance.htmlText = _root.VREnemyMetersInstance.EnemyHealth_mc.BracketsInstance.RolloverNameInstance.htmlText;
 		}
 		else{
-			AHZEnemyLevel_mc.html = false;
-			AHZEnemyLevel_mc.text = _root.VREnemyMetersInstance.EnemyHealth_mc.BracketsInstance.RolloverNameInstance.text;
+			AHZEnemyLevel_mc.RolloverNameInstance.html = false;
+			AHZEnemyLevel_mc.RolloverNameInstance.text = _root.VREnemyMetersInstance.EnemyHealth_mc.BracketsInstance.RolloverNameInstance.text;
 		}
 	}
 
 	function onEnterFrame()
-    {
+    {		
 		AHZEnemyLevel_mc._alpha = _root.VREnemyMetersInstance.EnemyHealth_mc.BracketsInstance._alpha;		
 		this._alpha = _root.VREnemyMetersInstance._alpha;
 		if (!AHZEnemyLevel_mc._alpha)
